@@ -1,0 +1,42 @@
+{% extends 'items/base.html' %} {% block content %}
+
+<div class="container-fluid mt-3">
+  <div class="row">
+
+    <!-- filter -->
+    <div class="col-lg-3 mx-auto">
+      <div class="list-group">
+
+        <a href="{% url 'home' %}" class="list-group-item list-group-item-action">All Items</a>
+
+        {% for category in categories %}
+        <a href="{% url 'home' %}?category={{ category.category_id }}" class="list-group-item list-group-item-action">{{ category.name }}</a>
+        {% endfor %}
+        
+      </div>
+    </div>
+
+    <!-- All Products-->
+    <div id="items" class="col-lg-9 mx-auto">
+      <div class="row mx-auto">
+        {% for item in items %}
+        <div class="card mx-auto mb-3" style="width: 18rem">
+          <img
+            class="card-img-top"
+            src="{{ item.image.url }}"
+            alt="{{ item.title }} image"
+            class="mx-auto d-block"
+          />
+          <div class="card-body">
+            <h5 class="card-title">{{ item.title }}</h5>
+            <p class="card-text">{{ item.price }} PKR</p>
+            <a href="#" class="btn btn-success border btn-sm">Add To Cart</a>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
