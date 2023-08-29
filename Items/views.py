@@ -2,14 +2,14 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.hashers import check_password, make_password
 from django.views import View
 from .models import Items, Category, Customer
-import re
+from Order.models import Order
 
 
 class Index(View):
     def get(self, request):
-        cart=request.session.get('cart')
+        cart = request.session.get('cart')
         if not cart:
-            request.session['cart']={}
+            request.session['cart'] = {}
         categories = Category.objects.all()
         category_id = request.GET.get('category')
         if category_id:
@@ -30,7 +30,7 @@ class Index(View):
             quantity = cart.get(item_id)
             if quantity:
                 if decrease_quantity:
-                    if quantity<=1:
+                    if quantity <= 1:
                         cart.pop(item_id)
                     else:
                         cart[item_id] = quantity - 1
@@ -131,7 +131,7 @@ class Login(View):
 
 class Cart(View):
     def get(self, request):
-        item_ids=list(request.session.get('cart').keys())
+        item_ids = list(request.session.get('cart').keys())
         items = Items.objects.filter(item_id__in=item_ids)
         print(items)
         return render(request, 'items/cart.html', {'items': items})
@@ -140,3 +140,30 @@ class Cart(View):
 def logout(request):
     request.session.clear()
     return redirect('login')
+
+
+class Checkout(View):
+    def post(self, request):
+        address = request.POST.get('address')
+        customer = request.session.get('customer')
+        cart = request.session.get('cart')
+        item_ids = list(cart.keys())
+        items = Items.objects.filter(item_id__in=item_ids)
+        print(items)
+        for item in items:
+            order = Order(customer=Customer(id=customer), item=item, price=item.price,
+                          quantity=cart.get(str(item.item_id)), address=str())
+            order = Order(customer=Customer(id=customer), item=item, price=item.price,
+                          quantity=cart.get(str(item.item_id)), address=str(address))
+            order.save()
+        request.session['cart'] = {}
+        return redirect('cart')
+
+
+class Orders(View):
+    def get(self, request):
+        customer=request.session.get('customer')
+        orders=Order.objects.filter(customer=customer).order_by('-date')
+        return render(request, 'items/orders.html',{'orders':orders})
+
+

@@ -14,3 +14,4 @@ class Order(models.Model):
         decimal_places=2, validators=[MinValueValidator(1)])
     address=models.CharField(max_length=150, default='')
     date=models.DateField(default=datetime.datetime.today())
+    status=models.BooleanField(default=False)

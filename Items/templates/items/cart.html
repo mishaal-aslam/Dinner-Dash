@@ -26,12 +26,13 @@
                     <td>{{item|item_total_price:request.session.cart|currency}}</td>
                 </tr>
                 {% endfor %}
-                <tr>
-                    <th colspan="4"></th>
-                    <th>Total</th>
-                    <th>{{items|total_cart_price:request.session.cart|currency}}</th>
-                </tr>
-                
+                <tfoot>
+                  <tr>
+                      <th colspan="4"></th>
+                      <th>Total</th>
+                      <th>{{items|total_cart_price:request.session.cart|currency}}</th>
+                  </tr>
+              </tfoot>
             </tbody>
         </table>
         <div class="my-3 py-3">
@@ -54,7 +55,7 @@
         </div>
         <div class="modal-body">
             <div class="m-2 p-3">
-                <form action="checkot/" methid="POST">
+                <form action="{% url 'checkout' %}" method="post">
                     {% csrf_token %}
                     <div class="form-group">
                       <label for="">Address</label>
