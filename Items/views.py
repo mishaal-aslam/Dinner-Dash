@@ -1,32 +1,51 @@
 from django.shortcuts import render, redirect
+from django.contrib.auth.hashers import check_password, make_password
+from django.views import View
 from .models import Items, Category, Customer
 import re
 
 
-def get_all_items_by_category_id(categoryId):
-    if categoryId:
-        return Items.objects.filter(category=categoryId)
-    else:
-        return Items.objects.all()
+class Index(View):
+    def get(self, request):
+        cart=request.session.get('cart')
+        if not cart:
+            request.session['cart']={}
+        categories = Category.objects.all()
+        category_id = request.GET.get('category')
+        if category_id:
+            items = Items.objects.filter(category=category_id)
+        else:
+            items = Items.objects.all()
+        context = {
+            'items': items,
+            'categories': categories,
+        }
+        return render(request, 'items/index.html', context)
 
+    def post(self, request):
+        item_id = request.POST.get('item')
+        decrease_quantity = request.POST.get('decrease_quantity')
+        cart = request.session.get('cart')
+        if cart:
+            quantity = cart.get(item_id)
+            if quantity:
+                if decrease_quantity:
+                    if quantity<=1:
+                        cart.pop(item_id)
+                    else:
+                        cart[item_id] = quantity - 1
+                else:
+                    cart[item_id] = quantity + 1
 
-def index(request):
-    # Items = None
-    categories = Category.objects.all()
-    categoryId = request.GET.get('category')
-    if categoryId:
-        items = get_all_items_by_category_id(categoryId)
-    else:
-        items = Items.objects.all()
-    context = {}
-    context['items'] = items
-    context['categories'] = categories
-    return render(request, 'items/index.html', context)
+            else:
+                cart[item_id] = 1
 
-
-def is_valid_email(email):
-    pattern = r'^[\w\.-]+@[\w\.-]+\.\w+$'
-    return re.match(pattern, email)
+        else:
+            cart = {}
+            cart[item_id] = 1
+        request.session['cart'] = cart
+        print("cart=", request.session['cart'])
+        return redirect('home')
 
 
 def emailexists(email):
@@ -42,19 +61,17 @@ def validate_password(password, confirm_password):
         return 'Password must contain at least 1 digit'
     elif not any(char.isalpha() for char in password):
         return 'Password must contain at least 1 letter'
-    if (password != confirm_password):
+    elif (password != confirm_password):
         return 'Password and Confirm Password must be same'
+    else:
+        return False
 
 
-def validate_email(email):
-    if not email:
-        return 'Email is a required field'
-    elif not is_valid_email(email):
-        return 'Invalid email address'
+class Signup(View):
+    def get(self, request):
+        return render(request, 'items/signup.html')
 
-
-def signup(request):
-    if request.method == 'POST':
+    def post(self, request):
         name = request.POST.get('name')
         display_name = request.POST.get('displayname')
         email = request.POST.get('email')
@@ -63,32 +80,63 @@ def signup(request):
         value = {'name': name,
                  'display_name': display_name,
                  'email': email}
+        customer = Customer(name=name,
+                            display_name=display_name,
+                            email=email,
+                            password=password)
         error_message = None
-        # Fields validation before creating customers
-
-        error_message = validate_password(password, confirm_password)
-
-        if emailexists(email):
-            error_message = 'This email already exists'
-
-        error_message = validate_email(email)
-
-
+        errormessage = validate_password(
+            password, confirm_password)
         if (not name):
             error_message = 'Name Required'
         elif (len(name) < 7):
             error_message = 'Name must be 7 characters long'
+        elif errormessage:
+            error_message = errormessage
+        elif emailexists(email):
+            error_message = 'This email already exists'
 
-        
         if not error_message:
-            customer = Customer(name=name,
-                                display_name=display_name,
-                                email=email,
-                                password=password)
+            customer.password = make_password(customer.password)
             customer.save()
             return redirect('home')
         else:
-            context={'error':error_message, 'values': value}
+            context = {'error': error_message, 'values': value}
             return render(request, 'items/signup.html', context)
 
-    return render(request, 'items/signup.html')
+
+class Login(View):
+    def get(self, request):
+        return render(request, 'items/login.html')
+
+    def post(self, request):
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        try:
+            customer = Customer.objects.get(email=email)
+        except:
+            customer = None
+        error_message = None
+        if customer:
+            if check_password(password, customer.password):
+                request.session['customer'] = customer.id
+                # request.session['email'] = customer.email
+                return redirect('home')
+            else:
+                error_message = 'Invalid Email or Password'
+        else:
+            error_message = 'Invalid Email or Password'
+        return render(request, 'items/login.html', {'error': error_message})
+
+
+class Cart(View):
+    def get(self, request):
+        item_ids=list(request.session.get('cart').keys())
+        items = Items.objects.filter(item_id__in=item_ids)
+        print(items)
+        return render(request, 'items/cart.html', {'items': items})
+
+
+def logout(request):
+    request.session.clear()
+    return redirect('login')

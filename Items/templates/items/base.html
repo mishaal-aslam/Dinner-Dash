@@ -17,8 +17,8 @@
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand" href="#"
-        ><span class="text-success font-weight-bold">UP</span> Foods</a
+      <h1 class="navbar-brand mt-2"
+        ><span class="text-success font-weight-bold">UP</span> Foods</h1
       >
       <button
         class="navbar-toggler"
@@ -35,7 +35,7 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item active">
-            <a class="nav-link" href="#"
+            <a class="nav-link" href="{% url 'home' %}"
               >Home <span class="sr-only">(current)</span></a
             >
           </li>
@@ -43,20 +43,33 @@
 
         <ul class="navbar-nav my-2 my-lg-0">
           <li class="nav-item">
-            <a class="nav-link" href="#"
-              >Logout<span class="sr-only">(current)</span></a
+            <a class="nav-link" href="cart/"
+              >Cart<span class="sr-only">(current)</span></a
+            >
+          </li>
+          {% if request.session.customer %}
+          <li class="nav-item">
+            <a class="nav-link" href="orders/"
+              >Orders<span class="sr-only">(current)</span></a
             >
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="signup/"
+            <a class="nav-link" href="{% url 'logout' %}"
+              >Logout<span class="sr-only">(current)</span></a
+            >
+          </li>
+          {% else %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'signup' %}"
               >Signup<span class="sr-only">(current)</span></a
             >
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#"
+            <a class="nav-link" href="{% url 'login' %}"
               >Login<span class="sr-only">(current)</span></a
             >
           </li>
+          {% endif %}
         </ul>
       </div>
     </nav>
