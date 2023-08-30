@@ -1,15 +1,7 @@
+
 from django.db import models
 from django.core.validators import MinValueValidator, MinLengthValidator, RegexValidator
-
-
-
-class Category(models.Model):
-    category_id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=150, unique=True)
-    description = models.TextField()
-
-    def __str__(self):
-        return self.name
+from .category import Category
 
 
 class Items(models.Model):
@@ -27,14 +19,3 @@ class Items(models.Model):
 
     class Meta:
         verbose_name_plural = "Items"
-
-
-class Customer(models.Model):
-    name = models.CharField(max_length=150)
-    display_name = models.CharField(
-        max_length=32, null=True, blank=True, validators=[MinLengthValidator(2)])
-    email = models.EmailField()
-    password = models.CharField(max_length=150)
-
-    def __str__(self):
-        return self.name

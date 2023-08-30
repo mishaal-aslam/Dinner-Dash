@@ -1,6 +1,7 @@
 from django.contrib import admin
-from .models import Category, Items, Customer
-from Order.models import Order
+from Items.Models.category import Category
+from Items.Models.items import Items
+from Items.Models.customer import Customer
 
 
 class AdminItems(admin.ModelAdmin):
@@ -14,4 +15,3 @@ class AdminCategory(admin.ModelAdmin):
 admin.site.register(Category, AdminCategory)
 admin.site.register(Items, AdminItems)
 admin.site.register(Customer)
-admin.site.register(Order)

@@ -1,5 +1,5 @@
 
-from .models import Customer
+from Items.Models.customer import Customer
 
 
 def emailexists(email):
@@ -7,7 +7,9 @@ def emailexists(email):
 
 
 def validate_password(password, confirm_password):
-    if (not password):
+    if (password != confirm_password):
+        return 'Password and Confirm Password must be same'
+    elif (not password):
         return 'Please enter password'
     elif len(password) < 8:
         return 'Password must be atleast 8 characters long'
@@ -15,7 +17,5 @@ def validate_password(password, confirm_password):
         return 'Password must contain at least 1 digit'
     elif not any(char.isalpha() for char in password):
         return 'Password must contain at least 1 letter'
-    elif (password != confirm_password):
-        return 'Password and Confirm Password must be same'
     else:
         return False

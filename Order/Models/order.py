@@ -1,10 +1,10 @@
 from django.db import models
-from Items.models import Items, Customer
-from django.core.validators import MinValueValidator, MinLengthValidator, RegexValidator
+from Items.Models.items import Items
+from Items.Models.customer import Customer
+from django.core.validators import MinValueValidator
 import datetime
 
 
-# Create your models here.
 class Order(models.Model):
     item = models.ForeignKey(Items, on_delete=models.CASCADE)
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
