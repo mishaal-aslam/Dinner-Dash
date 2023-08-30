@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect , HttpResponseRedirect
 from django.contrib.auth.hashers import check_password, make_password
 from django.views import View
 from .models import Items, Category, Customer
@@ -106,7 +106,9 @@ class Signup(View):
 
 
 class Login(View):
+    return_url=None
     def get(self, request):
+        Login.return_url=request.GET.get('return_url')
         return render(request, 'items/login.html')
 
     def post(self, request):
@@ -120,7 +122,9 @@ class Login(View):
         if customer:
             if check_password(password, customer.password):
                 request.session['customer'] = customer.id
-                # request.session['email'] = customer.email
+                if Login.return_url:
+                    return HttpResponseRedirect(Login.return_url)
+                Login.return_url=None
                 return redirect('home')
             else:
                 error_message = 'Invalid Email or Password'
@@ -133,7 +137,6 @@ class Cart(View):
     def get(self, request):
         item_ids = list(request.session.get('cart').keys())
         items = Items.objects.filter(item_id__in=item_ids)
-        print(items)
         return render(request, 'items/cart.html', {'items': items})
 
 

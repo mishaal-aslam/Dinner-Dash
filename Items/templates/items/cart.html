@@ -43,7 +43,6 @@
 
 
   
-  <!-- Modal -->
   <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -59,7 +58,7 @@
                     {% csrf_token %}
                     <div class="form-group">
                       <label for="">Address</label>
-                      <input type="text" name="" id="" class="form-control" placeholder="" aria-describedby="helpId">
+                      <input type="text" name="" id="" class="form-control" placeholder="" aria-describedby="helpId" required>
                     </div>
                     <input type="submit" class="btn btn-success col-lg-4 float-right" value="Checkout"/>
                 </form>
