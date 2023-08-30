@@ -21,16 +21,16 @@
                     <td>{{forloop.counter}}</td>
                     <td><img style="width:40px" class="rounded-circle" src="{{item.image.url}}"></td>
                     <td>{{item.title}}</td>
-                    <td>{{item.price|currency}}</td>
+                    <td>Rs./- {{item.price}}</td>
                     <td>{{item|cart_quantity:request.session.cart}}</td>
-                    <td>{{item|item_total_price:request.session.cart|currency}}</td>
+                    <td>Rs./- {{item|item_total_price:request.session.cart}}</td>
                 </tr>
                 {% endfor %}
                 <tfoot>
                   <tr>
                       <th colspan="4"></th>
                       <th>Total</th>
-                      <th>{{items|total_cart_price:request.session.cart|currency}}</th>
+                      <th>Rs./- {{items|total_cart_price:request.session.cart}}</th>
                   </tr>
               </tfoot>
             </tbody>

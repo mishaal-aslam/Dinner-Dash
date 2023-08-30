@@ -1,8 +1,9 @@
-from django.shortcuts import render, redirect , HttpResponseRedirect
+from django.shortcuts import render, redirect, HttpResponseRedirect
 from django.contrib.auth.hashers import check_password, make_password
 from django.views import View
 from .models import Items, Category, Customer
 from Order.models import Order
+from .utils import validate_password, emailexists
 
 
 class Index(View):
@@ -48,25 +49,6 @@ class Index(View):
         return redirect('home')
 
 
-def emailexists(email):
-    return Customer.objects.filter(email=email).exists()
-
-
-def validate_password(password, confirm_password):
-    if (not password):
-        return 'Please enter password'
-    elif len(password) < 8:
-        return 'Password must be atleast 8 characters long'
-    elif not any(char.isdigit() for char in password):
-        return 'Password must contain at least 1 digit'
-    elif not any(char.isalpha() for char in password):
-        return 'Password must contain at least 1 letter'
-    elif (password != confirm_password):
-        return 'Password and Confirm Password must be same'
-    else:
-        return False
-
-
 class Signup(View):
     def get(self, request):
         return render(request, 'items/signup.html')
@@ -106,9 +88,10 @@ class Signup(View):
 
 
 class Login(View):
-    return_url=None
+    return_url = None
+
     def get(self, request):
-        Login.return_url=request.GET.get('return_url')
+        Login.return_url = request.GET.get('return_url')
         return render(request, 'items/login.html')
 
     def post(self, request):
@@ -124,8 +107,9 @@ class Login(View):
                 request.session['customer'] = customer.id
                 if Login.return_url:
                     return HttpResponseRedirect(Login.return_url)
-                Login.return_url=None
-                return redirect('home')
+                else:
+                    Login.return_url = None
+                    return redirect('home')
             else:
                 error_message = 'Invalid Email or Password'
         else:
@@ -165,8 +149,6 @@ class Checkout(View):
 
 class Orders(View):
     def get(self, request):
-        customer=request.session.get('customer')
-        orders=Order.objects.filter(customer=customer).order_by('-date')
-        return render(request, 'items/orders.html',{'orders':orders})
-
-
+        customer = request.session.get('customer')
+        orders = Order.objects.filter(customer=customer).order_by('-date')
+        return render(request, 'items/orders.html', {'orders': orders})

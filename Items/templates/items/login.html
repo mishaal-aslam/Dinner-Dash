@@ -15,7 +15,7 @@
             name="email"
             id=""
             value="{{values.email}}"
-            class="form-control form-control-sm"
+            class="form-control"
             placeholder="example@gmail.com"
             required
           />
@@ -26,18 +26,28 @@
             type="password"
             name="password"
             id=""
-            class="form-control form-control-sm"
+            class="form-control"
             placeholder="********"
             required
           />
         </div>
-        
+
         <div class="form-group">
           <input
-            class="btn btn-sm btn-success col-lg-4"
+            class="btn btn-success col-lg-12"
             type="submit"
             value="Login"
           />
+        </div>
+        <div class="text-center form-group">
+          <p>
+            Don't have an account?<a
+              href="{% url 'signup' %}"
+              class="text-success"
+            >
+              Signup</a
+            >
+          </p>
         </div>
       </form>
     </div>

@@ -2,8 +2,6 @@ from django.db import models
 from django.core.validators import MinValueValidator, MinLengthValidator, RegexValidator
 
 
-# Create your models here.
-
 
 class Category(models.Model):
     category_id = models.AutoField(primary_key=True)

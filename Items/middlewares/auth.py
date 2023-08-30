@@ -1,16 +1,16 @@
 
 from django.shortcuts import render, redirect
 
+from django.urls import reverse
 def auth_middleware(get_response):
 
     def middleware(request):
 
-        print(request.session.get('customer'))
-        return_url=request.META['PATH_INFO']
+        return_url = request.get_full_path()
+        login_url = reverse('login')
         if not request.session.get('customer'):
-            return redirect(f'login?return_url={return_url}')
+            return redirect(f'{login_url}?return_url={return_url}')
         response = get_response(request)
-
      
         return response
 

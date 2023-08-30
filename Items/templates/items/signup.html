@@ -15,7 +15,7 @@
             name="name"
             id=""
             value="{{values.name}}"
-            class="form-control form-control-sm"
+            class="form-control"
             placeholder="Enter your name"
           />
         </div>
@@ -26,7 +26,7 @@
             name="displayname"
             id=""
             value="{{values.display_name}}"
-            class="form-control form-control-sm"
+            class="form-control"
             placeholder="Enter your name"
           />
         </div>
@@ -37,7 +37,7 @@
             name="email"
             id=""
             value="{{values.email}}"
-            class="form-control form-control-sm"
+            class="form-control"
             placeholder="example@gmail.com"
             required
           />
@@ -48,7 +48,7 @@
             type="password"
             name="password"
             id=""
-            class="form-control form-control-sm"
+            class="form-control"
             placeholder="********"
             required
           />
@@ -59,17 +59,27 @@
             type="password"
             name="confirmpassword"
             id=""
-            class="form-control form-control-sm"
+            class="form-control"
             placeholder="********"
           />
         </div>
 
         <div class="form-group">
           <input
-            class="btn btn-sm btn-success"
+            class="btn btn-success col-lg-12"
             type="submit"
             value="Create an Account"
           />
+        </div>
+        <div class="text-center form-group">
+          <p>
+            Already have an account?<a
+              href="{% url 'login' %}"
+              class="text-success"
+            >
+              Login</a
+            >
+          </p>
         </div>
       </form>
     </div>
